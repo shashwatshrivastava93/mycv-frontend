@@ -1,0 +1,19 @@
+{
+  "name": "mygitcv",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.1",
+    "vite": "^8.0.10"
+  },
+  "dependencies": {
+    "requests": "^0.3.0",
+    "streamlit": "^2.51.2"
+  }
+}

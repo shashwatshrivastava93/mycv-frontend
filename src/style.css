@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Shashwat Shrivastava | Experience Center</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+  :root {
+    --primary: #00d2ff;
+    --bg: #020c1b;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --glass: rgba(255, 255, 255, 0.03);
+    --transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: var(--bg);
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    color: white;
+  }
+
+  canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* --- LANDING PAGE --- */
+  .hero {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 2;
+    transition: var(--transition);
+    width: 90%;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    background: linear-gradient(to right, #fff, var(--primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0;
+    font-weight: 800;
+  }
+
+  .hero p {
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    margin-top: 15px;
+    font-size: 0.9rem;
+  }
+
+  .btn-explore {
+    margin-top: 40px;
+    padding: 15px 45px;
+    background: transparent;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .btn-explore:hover {
+    background: var(--primary);
+    color: black;
+    box-shadow: 0 0 30px rgba(0, 210, 255, 0.4);
+  }
+
+  /* --- INTERACTIVE RESUME OVERLAY --- */
+  #resumeOverlay {
+    position: fixed;
+    top: 0;
+    left: 100%;
+    width: 100%;
+    height: 100vh;
+    background: var(--bg);
+    z-index: 1000;
+    transition: var(--transition);
+    overflow-y: auto;
+    padding: 80px 0;
+  }
+
+  #resumeOverlay.active { left: 0; }
+
+  .close-btn {
+    position: fixed;
+    top: 30px;
+    right: 50px;
+    font-size: 2rem;
+    cursor: pointer;
+    color: var(--primary);
+    z-index: 1001;
+    transition: 0.3s;
+  }
+  .close-btn:hover { transform: rotate(90deg); }
+
+  .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+
+  .resume-section {
+    margin-bottom: 60px;
+    border-left: 2px solid var(--primary);
+    padding-left: 30px;
+  }
+
+  .resume-section h2 {
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 25px;
+    font-size: 1.2rem;
+  }
+
+  .job-card {
+    background: var(--glass);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 30px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    transition: 0.3s;
+  }
+
+  .job-card:hover { border-color: var(--primary); background: rgba(255,255,255,0.05); }
+  .job-card h3 { margin: 0; font-size: 1.4rem; }
+  .job-card .meta { color: var(--primary); font-size: 0.85rem; margin-bottom: 15px; display: block; font-weight: bold;}
+  .job-card ul { padding-left: 20px; color: rgba(255,255,255,0.8); line-height: 1.7; }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 15px;
+  }
+
+  .skill-item {
+    background: var(--glass);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 15px;
+    text-align: center;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  /* --- CHAT BOT UI --- */
+  .ai-bubble {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--primary);
+    color: black;
+    padding: 15px 25px;
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 2001;
+    box-shadow: 0 10px 30px rgba(0, 210, 255, 0.4);
+    transition: 0.3s;
+  }
+  .ai-bubble:hover { transform: scale(1.05); }
+
+  #chatWindow {
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    width: 350px;
+    height: 500px;
+    background: rgba(2, 12, 27, 0.98);
+    border: 1px solid var(--primary);
+    border-radius: 16px;
+    display: none;
+    flex-direction: column;
+    z-index: 2000;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+    backdrop-filter: blur(15px);
+  }
+
+  .chat-header {
+    padding: 15px;
+    background: rgba(0, 210, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    color: var(--primary);
+    border-radius: 16px 16px 0 0;
+  }
+
+  #chatMessages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .msg { padding: 10px 15px; border-radius: 12px; font-size: 0.85rem; line-height: 1.5; max-width: 85%; }
+  .msg.user { align-self: flex-end; background: var(--primary); color: black; font-weight: 600; }
+  .msg.bot { align-self: flex-start; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
+
+  .chat-input-area {
+    padding: 15px;
+    display: flex;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+
+  #chatInput {
+    flex: 1;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 10px;
+    color: white;
+    border-radius: 6px;
+    outline: none;
+  }
+
+  .chat-input-area button {
+    background: var(--primary);
+    border: none;
+    margin-left: 10px;
+    padding: 0 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+</style>
+</head>
+
+<body>
+
+<canvas id="antigravityCanvas"></canvas>
+
+<div class="hero" id="heroSection">
+  <h1 id="typing"></h1>
+  <p>Agent-Powered Performance • GCC Leadership • AI Transformation</p>
+  <button class="btn-explore" onclick="toggleResume()">Explore Experience</button>
+</div>
+
+<div id="resumeOverlay">
+  <div class="close-btn" onclick="toggleResume()">✕</div>
+  
+  <div class="container">
+    <div class="resume-section">
+      <h2>Professional Summary</h2>
+      <p style="font-size: 1.1rem; line-height: 1.8; opacity: 0.8;">
+        Strategic Product Leader with 11+ years driving multi-million dollar digital transformations for Global Capability Centers (GCCs). Expert in engineering high-performing organizations and modernizing enterprise workflows through the convergence of Pega/Appian BPM and Generative AI[cite: 6, 134].
+      </p>
+    </div>
+
+    <div class="resume-section">
+      <h2>Career Impact</h2>
+      <div class="job-card">
+        <h3>Senior Technology Product Owner</h3>
+        <span class="meta">Telstra | 2019 – Present</span>
+        <ul>
+          <li>Engineered a ₹6M revenue turnaround by resolving 11 consecutive GTM failure cycles for mission-critical platforms[cite: 7, 26, 142].</li>
+          <li>Achieved an 80% reduction in manual operational effort through Python-led intelligent automation[cite: 7, 33, 133].</li>
+          <li>Directed cross-functional organizations of 30+ members, achieving 95% on-time delivery and maintaining 99.9% platform uptime[cite: 13, 29, 36, 162].</li>
+          <li>Spearheaded API modernization by decommissioning 70+ redundant proxies to optimize platform overhead[cite: 15, 35, 154].</li>
+        </ul>
+      </div>
+
+      <div class="job-card">
+        <h3>Techno-Functional Lead</h3>
+        <span class="meta">Hexaware Technologies | 2015 – 2019</span>
+        <ul>
+          <li>Delivered 20+ automated workflows, reducing average process latency by 10 hours per flow[cite: 42, 102, 170].</li>
+          <li>Improved delivery efficiency by 30% through standardized BPM roadmaps and Pega DCO[cite: 40, 169].</li>
+          <li>Integrated Azure AD with Pega and SAP for global financial platforms, achieving 100% authentication success[cite: 44, 171].</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="resume-section">
+      <h2>AI & Strategic Projects</h2>
+      <div class="skills-grid">
+        <div class="skill-item">Gen AI Feedback Engine (2024) [cite: 46, 107]</div>
+        <div class="skill-item">Text to Artefacts (2026) [cite: 251, 333]</div>
+        <div class="skill-item">AI Call Coaching Assistant [cite: 249, 387]</div>
+        <div class="skill-item">CSR Reports Summarizer [cite: 47, 109]</div>
+      </div>
+    </div>
+
+    <div class="resume-section">
+      <h2>Education</h2>
+      <div class="job-card">
+        <h3>M.Sc. in Data Science</h3>
+        <span class="meta">Liverpool John Moores University (via upGrad) | In Progress [cite: 55, 122, 190]</span>
+      </div>
+      <div class="job-card">
+        <h3>Executive PG Diploma in AI</h3>
+        <span class="meta">IIIT Bangalore | 2025 [cite: 56, 123, 191]</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="ai-bubble" onclick="toggleChat()">🤖 ASK MY AI</div>
+
+<div id="chatWindow">
+  <div class="chat-header">
+    <span>Shashwat's AI Twin</span>
+    <span onclick="toggleChat()" style="cursor:pointer">✕</span>
+  </div>
+  <div id="chatMessages">
+    <div class="msg bot"><b>AI:</b> Hello! I'm Shashwat's digital twin. Ask me about his ₹6M turnaround at Telstra, his work with 30+ member teams, or his latest GenAI tools[cite: 10, 13, 46].</div>
+  </div>
+  <div class="chat-input-area">
+    <input type="text" id="chatInput" placeholder="Ask about GCC, AI, or Telstra..." onkeypress="if(event.key==='Enter') sendChatMessage()">
+    <button onclick="sendChatMessage()">→</button>
+  </div>
+</div>
+
+<script>
+// --- NAVIGATION LOGIC ---
+function toggleResume() {
+  const overlay = document.getElementById("resumeOverlay");
+  const hero = document.getElementById("heroSection");
+  overlay.classList.toggle("active");
+  hero.style.opacity = overlay.classList.contains("active") ? "0" : "1";
+}
+
+function toggleChat() {
+  const win = document.getElementById("chatWindow");
+  win.style.display = (win.style.display === "flex") ? "none" : "flex";
+}
+
+// --- AI CHAT LOGIC ---
+function sendChatMessage() {
+  const input = document.getElementById("chatInput");
+  const msgContainer = document.getElementById("chatMessages");
+  const text = input.value.trim();
+  if (!text) return;
+
+  msgContainer.innerHTML += `<div class="msg user">${text}</div>`;
+  input.value = "";
+  msgContainer.scrollTop = msgContainer.scrollHeight;
+
+  const botMsgId = "bot-" + Date.now();
+  msgContainer.innerHTML += `<div class="msg bot" id="${botMsgId}">...</div>`;
+
+  // --- KNOWLEDGE BASE RESPONSE ---
+  const val = text.toLowerCase();
+  let reply = "Shashwat is a Senior Product Leader with 11+ years of expertise in AI Transformation and GCC operations[cite: 5, 132].";
+  
+  if (val.includes("revenue") || val.includes("telstra")) 
+    reply = "At Telstra, Shashwat engineered a ₹6M revenue recovery for the 'Rapid Reconnection' initiative within 6 months[cite: 10, 142].";
+  if (val.includes("effort") || val.includes("automation")) 
+    reply = "He reduced manual operational effort by 80% through a Python-based automated framework integrated with Jenkins[cite: 12, 133].";
+  if (val.includes("team") || val.includes("members")) 
+    reply = "He has a proven track record of leading cross-functional organizations of 30+ members[cite: 13, 146].";
+  if (val.includes("ai") || val.includes("projects")) 
+    reply = "Recent AI projects include a GenAI Customer Feedback Engine and a 'Text to Artefacts' tool showcased at Pune Manthan[cite: 107, 390].";
+
+  setTimeout(() => {
+    document.getElementById(botMsgId).innerHTML = `<b>AI:</b> ${reply}`;
+    msgContainer.scrollTop = msgContainer.scrollHeight;
+  }, 500);
+}
+
+// --- INTERACTIVE BACKGROUND ---
+const canvas = document.getElementById('antigravityCanvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+const mouse = { x: null, y: null, radius: 150 };
+
+function initCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
+
+class Particle {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * canvas.width;
+    this.y = canvas.height + Math.random() * 200;
+    this.size = Math.random() * 2 + 1;
+    this.speed = Math.random() * 0.8 + 0.3;
+    this.opacity = Math.random() * 0.4 + 0.1;
+  }
+  update() {
+    this.y -= this.speed;
+    this.x += Math.sin(this.y * 0.01) * 0.3;
+    let dx = mouse.x - this.x;
+    let dy = mouse.y - this.y;
+    let dist = Math.sqrt(dx*dx + dy*dy);
+    if (dist < mouse.radius) {
+      this.x -= (dx/dist) * 3;
+      this.y -= (dy/dist) * 3;
+    }
+    if (this.y < -20) this.reset();
+  }
+  draw() {
+    ctx.fillStyle = `rgba(0, 210, 255, ${this.opacity})`;
+    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill();
+  }
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (particles.length < 120) particles.push(new Particle());
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(animate);
+}
+initCanvas(); animate();
+
+// --- TYPING EFFECT ---
+const lines = ["Shashwat Shrivastava", "I build AI-driven systems", "Impact through Innovation"];
+let lIdx = 0, cIdx = 0, del = false;
+function type() {
+  const el = document.getElementById("typing");
+  el.innerText = del ? lines[lIdx].substring(0, cIdx--) : lines[lIdx].substring(0, cIdx++);
+  if (!del && cIdx > lines[lIdx].length) { del = true; setTimeout(type, 2000); return; }
+  if (del && cIdx < 0) { del = false; lIdx = (lIdx+1)%lines.length; }
+  setTimeout(type, del ? 40 : 100);
+}
+type();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Shashwat Shrivastava | Senior Product Leader</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+  :root {
+    --primary: #00d2ff;
+    --bg: #020c1b;
+    --card-bg: rgba(255, 255, 255, 0.03);
+    --transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: white;
+  }
+
+  canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* --- HERO LAYER --- */
+  .hero {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 2;
+    transition: var(--transition);
+    width: 100%;
+  }
+
+  .typewriter-frame {
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 700;
+    letter-spacing: -2px;
+    margin: 0;
+    background: linear-gradient(to right, #fff, #888);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1.2;
+  }
+
+  .hero p {
+    opacity: 0.6;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    font-size: 0.8rem;
+    margin-top: 15px;
+  }
+
+  /* --- MAIN PAGE CONTACT INFO --- */
+  .main-contact {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    flex-wrap: wrap;
+  }
+
+  .main-contact a {
+    color: white;
+    text-decoration: none;
+    opacity: 0.5;
+    transition: 0.3s;
+  }
+
+  .main-contact a:hover {
+    opacity: 1;
+    color: var(--primary);
+  }
+
+  .btn-group {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+  }
+
+  .btn {
+    padding: 12px 35px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    cursor: pointer;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    transition: 0.3s;
+    text-transform: uppercase;
+    border-radius: 2px;
+    width: 250px;
+  }
+
+  .btn:hover {
+    border-color: var(--primary);
+    background: rgba(0, 210, 255, 0.05);
+    box-shadow: 0 0 20px rgba(0, 210, 255, 0.2);
+  }
+
+  /* --- RESUME OVERLAY --- */
+  #resumeOverlay {
+    position: fixed;
+    top: 0;
+    left: 100%;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    z-index: 1000;
+    transition: var(--transition);
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    visibility: hidden;
+  }
+
+  #resumeOverlay.active {
+    left: 0;
+    visibility: visible;
+  }
+
+  .close-btn {
+    position: fixed;
+    top: 40px;
+    right: 60px;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    opacity: 0;
+    z-index: 1001;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+  }
+
+  #resumeOverlay.active ~ .close-btn {
+    opacity: 0.5;
+    pointer-events: auto;
+  }
+
+  .close-btn:hover { opacity: 1 !important; color: var(--primary); }
+
+  .container {
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 100px 20px;
+  }
+
+  .impact-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 60px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 40px;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .stat-box { min-width: 150px; }
+  .stat-box strong { color: var(--primary); font-size: 2rem; display: block; }
+  .stat-box span { font-size: 0.7rem; opacity: 0.5; text-transform: uppercase; letter-spacing: 1px;}
+
+  /* --- EXPERIENCE SECTION WITH ICONS --- */
+  .section-title {
+    color: var(--primary);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    margin-bottom: 40px;
+    display: block;
+  }
+
+  .experience-block {
+    margin-bottom: 60px;
+    position: relative;
+    padding-left: 60px;
+  }
+
+  .company-icon {
+    position: absolute;
+    left: 0;
+    top: 5px;
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 1.2rem;
+  }
+
+  .icon-telstra { background-color: #004b8d; color: white; }
+  .icon-hexaware { background-color: #ff6a00; color: white; }
+
+  .experience-block h3 { font-size: 1.4rem; margin: 0; font-weight: 600; }
+  .experience-block .role-meta { opacity: 0.4; font-size: 0.85rem; margin-top: 5px; margin-bottom: 20px; display: block; }
+  .experience-block ul { padding-left: 20px; opacity: 0.8; line-height: 1.8; font-size: 1rem; }
+</style>
+</head>
+
+<body>
+
+<canvas id="antigravityCanvas"></canvas>
+
+<div class="hero" id="hero">
+  <div class="typewriter-frame">
+    <h1 id="typing"></h1>
+  </div>
+  <p>Agent-Powered Performance • GCC Leadership • AI Transformation</p>
+
+  <div class="main-contact">
+      <a href="mailto:shashwatshrivastav93@gmail.com">EMAIL</a>
+      <a href="tel:+919840173979">PHONE</a>
+      <a href="https://www.linkedin.com/in/shashwatshrivastavatechpo/" target="_blank">LINKEDIN</a>
+      <a href="#" onclick="window.print(); return false;">DOWNLOAD CV</a>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn" onclick="toggleResume()">Explore Experience</button>
+    <button class="btn" onclick="alert('AI Agent Interface would launch here.')">🤖 Ask My AI</button>
+  </div>
+</div>
+
+<div id="resumeOverlay">
+  <div class="container">
+    <div class="impact-stats">
+        <div class="stat-box"><strong>₹6M</strong><span>Revenue Recovery</span></div>
+        <div class="stat-box"><strong>80%</strong><span>Effort Reduction</span></div>
+        <div class="stat-box"><strong>30+</strong><span>Strategic Team Size</span></div>
+        <div class="stat-box"><strong>99.9%</strong><span>Platform Uptime</span></div>
+    </div>
+
+    <span class="section-title">Professional Impact</span>
+
+    <div class="experience-block">
+        <div class="company-icon icon-telstra">T</div>
+        <h3>Senior Product Management Leader</h3>
+        <span class="role-meta">Telstra | 2019 – Present</span>
+        <ul>
+            <li>Generated ₹6M in revenue by assuming strategic governance of failing initiatives[cite: 10, 26, 142].</li>
+            <li>Resolved 11 consecutive GTM failure cycles and achieved market launch within 6 months[cite: 7, 11, 27, 143].</li>
+            <li>Architected Python-based automated communication frameworks that reduced manual effort by 80%[cite: 7, 12, 33, 133].</li>
+            <li>Directed a cross-functional organization of 30+ members across engineering and product streams[cite: 8, 13, 28, 146].</li>
+            <li>Maintained near-perfect uptime (99.9%) for mission-critical platforms during global peak traffic events[cite: 13, 36, 151, 152].</li>
+        </ul>
+    </div>
+
+    <div class="experience-block">
+        <div class="company-icon icon-hexaware">H</div>
+        <h3>Techno-Functional Lead</h3>
+        <span class="role-meta">Hexaware Technologies | 2015 – 2019</span>
+        <ul>
+            <li>Improved delivery efficiency by 30% through standardized BPM roadmaps and platform selection[cite: 40, 169].</li>
+            <li>Designed and automated 20+ business process workflows, reducing processing time by 10 hours per flow[cite: 42, 102, 170].</li>
+            <li>Managed end-to-end delivery for global enterprise clients, owning solution design through implementation[cite: 41, 103, 172].</li>
+        </ul>
+    </div>
+  </div>
+</div>
+
+<div class="close-btn" id="closeBtn" onclick="toggleResume()">BACK TO HOME</div>
+
+<script>
+function toggleResume() {
+  const overlay = document.getElementById("resumeOverlay");
+  const hero = document.getElementById("hero");
+  overlay.classList.toggle("active");
+  hero.style.opacity = overlay.classList.contains("active") ? "0" : "1";
+}
+
+const canvas = document.getElementById('antigravityCanvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+const mouse = { x: null, y: null, radius: 150 };
+
+function initCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
+
+class Particle {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * canvas.width;
+    this.y = canvas.height + Math.random() * 200;
+    this.size = Math.random() * 2 + 1;
+    this.speed = Math.random() * 0.7 + 0.3;
+    this.opacity = Math.random() * 0.4 + 0.1;
+  }
+  update() {
+    this.y -= this.speed;
+    this.x += Math.sin(this.y * 0.01) * 0.3;
+    let dx = mouse.x - this.x;
+    let dy = mouse.y - this.y;
+    let dist = Math.sqrt(dx*dx + dy*dy);
+    if (dist < mouse.radius) {
+      this.x -= (dx/dist) * 3;
+      this.y -= (dy/dist) * 3;
+    }
+    if (this.y < -20) this.reset();
+  }
+  draw() {
+    ctx.fillStyle = `rgba(0, 210, 255, ${this.opacity})`;
+    ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill();
+  }
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (particles.length < 100) particles.push(new Particle());
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(animate);
+}
+initCanvas(); animate();
+
+const lines = ["Shashwat Shrivastava", "I build AI-driven systems", "Senior Product Leader"];
+let lIdx = 0, cIdx = 0, del = false;
+function type() {
+  const el = document.getElementById("typing");
+  const current = lines[lIdx];
+  el.innerText = del ? current.substring(0, cIdx--) : current.substring(0, cIdx++);
+
+  if (!del && cIdx > current.length) {
+    del = true;
+    setTimeout(type, 2000);
+    return;
+  }
+  if (del && cIdx < 0) {
+    del = false;
+    lIdx = (lIdx + 1) % lines.length;
+  }
+  setTimeout(type, del ? 40 : 80);
+}
+type();
+</script>
+
+</body>
+</html>
